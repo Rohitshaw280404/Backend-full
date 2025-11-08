@@ -5,12 +5,13 @@ import dotenv from "dotenv";
 import connectDB from "./db/index.db.js";
 import{ app }from "./app.js";
 
-import { DB_NAME} from "./constants.js";
+import {DB_NAME} from "./constants.js";
 
 
 dotenv.config();
 
 console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
+
 
 
 
