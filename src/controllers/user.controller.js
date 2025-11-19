@@ -4,7 +4,7 @@ import {User} from "../models/user.model.js"
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-const generateAccessAndRefreshTokens = async(userId){
+const generateAccessAndRefreshTokens = async(userId)=>{
   try {
     const user = await User.findById(userId)
     const accessToken = user.generateAccessToken()
@@ -157,11 +157,27 @@ return res.status (201).json (
 
 
   const logoutUser = asyncHandler(async(req,res) =>{
-    User.findById
+     await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $set: {
+            refreshToken:  undefined
+          }
+        },
+        {
+          new: true
+        }
+      )
+       const options = {
+      httpOnly: true,
+      secure: true
+    }
 
-
-
-
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out"))
 
   })
 
@@ -170,4 +186,3 @@ export {
    loginUser,
    logoutUser
   };
- 
