@@ -1,68 +1,47 @@
-import mongoose, {Schema} from  "mongoose";
-import mongooseAggregstePaginate from "mongoose-aggregate-paginate-v2";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import mongoose, {Schema} from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const videoSchema = new Schema(
     {
-     videoFile:{
-        type: String, // cloudinary url
-        required: true,
-     },
-     thumbnail: {
-      type: String,
-      required: true
-     },
-     title: {
-        type: String,
-        required: true,
-     }, 
-     description: {
-        type: String,
-        required: true,
-        trim: true,
-     }    ,
-     duration: {
-      type: Number,
-      required: true,  
-     },
-       views: {
-         type: Number,
-         deafault: 0, 
-       },
+        videoFile: {
+            type: String, //cloudinary url
+            required: true
+        },
+        thumbnail: {
+            type: String, //cloudinary url
+            required: true
+        },
+        title: {
+            type: String, 
+            required: true
+        },
+        description: {
+            type: String, 
+            required: true
+        },
+        duration: {
+            type: Number, 
+            required: true
+        },
+        views: {
+            type: Number,
+            default: 0
+        },
         isPublished: {
-         type: Boolean,
-         default: true, 
+            type: Boolean,
+            default: true
         },
         owner: {
-         type: Schema.Types.ObjectId,
-         ref:"User",
-        },
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
 
-
-
-
-    },
-    { timestamps: true,
- }
+    }, 
+    {
+        timestamps: true
+    }
 )
 
-userSchema.pre("save", async function(next){   // complex process will take time
-   if(!this.isModified("password")) return next();
+videoSchema.plugin(mongooseAggregatePaginate)
 
-   this.password = bcrypt.hash(this.password, 10)
-   next()
-})
-
-// to compare password 
-
-userSchema.methods.ispasswordCorrect = async function(password){
-return await bcrypt.compare("pasowrd", this.password)
-}
-
-
-
-
-videoSchema.plugin(mongooseAggregstePaginate)
-
-export const Video = mongoose.model("video",videoSchema);
+export const Video = mongoose.model("Video", videoSchema)
